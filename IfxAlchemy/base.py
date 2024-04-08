@@ -345,10 +345,16 @@ class IfxCompiler(compiler.SQLCompiler):
     def visit_mod_binary(self, binary, operator, **kw):
         return "mod(%s, %s)" % (self.process(binary.left),
                                                 self.process(binary.right))
+    # THis code is causing an syntax error with Informix 12.10 and SQLAlchemy
+    # def limit_clause(self, select,**kwargs):
+    #     if (select._limit is not None) and (select._offset is None):
+    #         return " FETCH FIRST %s ROWS ONLY" % select._limit
+    #     else:
+    #         return ""
 
     def limit_clause(self, select,**kwargs):
         if (select._limit is not None) and (select._offset is None):
-            return " FETCH FIRST %s ROWS ONLY" % select._limit
+            return " LIMIT %s" % select._limit
         else:
             return ""
 
